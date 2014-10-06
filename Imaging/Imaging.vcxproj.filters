@@ -21,7 +21,7 @@
     <ClInclude Include="raster_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="wic_image.h">
+    <ClInclude Include="wic_file.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -29,7 +29,7 @@
     <ClCompile Include="raster_image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="wic_image.cpp">
+    <ClCompile Include="wic_file.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

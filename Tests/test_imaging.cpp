@@ -1,7 +1,7 @@
 #include <ShlObj.h>
 
 #include "raster_image.h"
-#include "wic_image.h"
+#include "wic_file.h"
 
 void GetFilePath(std::wstring &path)
 {
@@ -42,10 +42,11 @@ int main(void)
 		{
 			using namespace Imaging;
 
-			WicFile wic_file1;
 			std::wstring path;
 			GetFilePath(path);
-			wic_file1.Open(path, RasterFileI::FileMode::Read);
+
+			WicFile wic_file1;
+			wic_file1.Open(path, FileMode::Read);
 			RasterImage img1;
 			wic_file1.Read(img1);
 

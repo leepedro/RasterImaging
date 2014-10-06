@@ -137,11 +137,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="raster_image.h" />
-    <ClInclude Include="wic_image.h" />
+    <ClInclude Include="wic_file.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="raster_image.cpp" />
-    <ClCompile Include="wic_image.cpp" />
+    <ClCompile Include="wic_file.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
