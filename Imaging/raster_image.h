@@ -54,6 +54,15 @@ namespace Imaging
 
 
 	// Future implementations.
+	class GeoTiffFile : public RasterFileI
+	{
+	public:
+		bool Open(const std::wstring &path, FileMode mode = FileMode::Read) override;
+		bool Read(RasterImage &imgDst, unsigned int frameNo = 0) override;
+		bool Write(const RasterImage &imgDst, unsigned int frameNo = 0) override;
+		bool Close(void) override;
+	};
+
 	class Hdf5File : public FileI
 	{
 	public:
