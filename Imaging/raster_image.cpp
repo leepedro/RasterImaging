@@ -4,7 +4,7 @@
 
 namespace Imaging
 {
-	void RasterImage::Resize(::size_t depth, ::size_t width, ::size_t height)
+	void RasterImage::Resize(DataType dataType, ::size_t depth, ::size_t width, ::size_t height)
 	{
 		auto sz = depth * width * height;
 		if (this->data.size() != sz)
@@ -12,7 +12,14 @@ namespace Imaging
 		this->depth = depth;
 		this->width = width;
 		this->height = height;
+		this->dataType = dataType;
 	}
+
+	//template <typename T>
+	//void RasterImage::Resize_(::size_t depth, ::size_t width, ::size_t height)
+	//{
+
+	//}
 
 	void RasterImage::Swap(std::vector<unsigned char> &src, ::size_t depth, ::size_t width, ::size_t height)
 	{

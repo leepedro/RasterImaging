@@ -26,7 +26,7 @@ namespace Imaging
 		~WicFile(void);
 		bool Open(const std::wstring &path, FileMode mode = FileMode::Read) override;
 		bool Read(RasterImage &imgDst, unsigned int frameNo = 0) override;
-		bool Write(const RasterImage &imgDst, unsigned int frameNo = 0) override;
+		bool Write(const RasterImage &imgSrc, unsigned int frameNo = 0) override;
 		bool Close(void) override;
 
 	protected:

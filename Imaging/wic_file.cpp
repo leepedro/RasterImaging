@@ -35,7 +35,7 @@ namespace Imaging
 				throw std::runtime_error("Failed to create a decoder.");
 		}
 		else if (mode == FileMode::Write)
-		{	// Create a file stream.
+		{	// Create and initialize a file stream.
 			SafeRelease(this->stream);
 			if (FAILED(this->factory->CreateStream(&this->stream)))
 				throw std::runtime_error("Failed to create a stream.");
@@ -46,10 +46,12 @@ namespace Imaging
 			if (!WicFile::GetContainerGUID(path, guid_container))
 				throw std::runtime_error("Unknown container format.");
 
-			// Create an encoder for a whole file.
+			// Create and initialize an encoder for a whole file.
 			SafeRelease(this->encoder);
 			if (FAILED(this->factory->CreateEncoder(guid_container, nullptr, &this->encoder)))
 				throw std::runtime_error("Failed to create an encoder.");
+			if (FAILED(this->encoder->Initialize(this->stream, WICBitmapEncoderNoCache)))
+				throw std::runtime_error("Failed to initialize an encoder.");
 		}
 		else
 			throw std::logic_error("Unknown file mode.");
@@ -85,7 +87,7 @@ namespace Imaging
 				throw std::runtime_error("Failed to get a frame.");
 
 			// Create a format converter,
-			// and convert the source image frame to 32bit BGRA.
+			// and convert the source image frame to 32bit BGRA regardless of original format.
 			if (FAILED(this->factory->CreateFormatConverter(&format_converter)))
 				throw std::runtime_error("Failed to create a format converter.");
 			if (FAILED(format_converter->Initialize(frame, ::GUID_WICPixelFormat32bppPBGRA, ::WICBitmapDitherTypeNone,
@@ -99,7 +101,7 @@ namespace Imaging
 			if (FAILED(format_converter->GetSize(&w, &h)))
 				throw std::runtime_error("Failed to get the size of the source image frame.");
 			unsigned int sz = w * h * 4;
-			imgDst.Resize(4, w, h);
+			imgDst.Resize(DataType::UCHAR, 4, w, h);
 			if (FAILED(format_converter->CopyPixels(nullptr, w * 4, sz, imgDst.data.data())))
 				throw std::runtime_error("Failed to copy pixels from the source image frame.");
 		}
@@ -116,8 +118,9 @@ namespace Imaging
 		return true;	// redundant response to maintain the class protocol.
 	}
 
-	bool WicFile::Write(const RasterImage &imgDst, unsigned int frameNo)
+	bool WicFile::Write(const RasterImage &imgSrc, unsigned int frameNo)
 	{
+
 		return false;
 	}
 

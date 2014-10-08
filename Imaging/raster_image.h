@@ -7,20 +7,41 @@
 
 namespace Imaging
 {
+	// Data type supported as image data.
+	enum struct DataType
+	{
+		UNDEFINED,
+		CHAR,
+		SCHAR,
+		UCHAR,
+		SHORT,
+		USHORT,
+		INT,
+		UINT,
+		LONGLONG,
+		ULONGLONG,
+		FLOAT,
+		DOUBLE
+	};
+
 	class RasterImage
 	{
 	public:
-		void Resize(::size_t depth, ::size_t width, ::size_t height);
+		void Resize(DataType dataType, ::size_t depth, ::size_t width, ::size_t height);
+		//template <typename T>
+		//void Resize_<T>(::size_t depth, ::size_t width, ::size_t height);
 		void Swap(std::vector<unsigned char> &src, ::size_t depth, ::size_t width, ::size_t height);
 
 		std::vector<unsigned char> data;
 		::size_t depth = 0;
 		::size_t width = 0;
 		::size_t height = 0;
+		DataType dataType = DataType::UNDEFINED;
 
 	protected:
 	private:
 		bool CheckBoundary(void) const;
+
 	};
 
 	enum class FileMode { Read, Write };
