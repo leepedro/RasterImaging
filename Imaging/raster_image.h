@@ -33,10 +33,13 @@ namespace Imaging
 		void Swap(std::vector<unsigned char> &src, ::size_t depth, ::size_t width, ::size_t height);
 
 		std::vector<unsigned char> data;
-		::size_t depth = 0;
-		::size_t width = 0;
-		::size_t height = 0;
-		DataType dataType = DataType::UNDEFINED;
+		// bytes / channel = 1
+		bool isSigned = false;
+		bool isFloating = false;
+		::size_t depth = 0;		// channels / pixel
+		::size_t width = 0;		// pixels / line
+		::size_t height = 0;	// lines / frame
+		DataType dataType = DataType::UNDEFINED;	//
 
 	protected:
 	private:
