@@ -101,7 +101,7 @@ namespace Imaging
 			if (FAILED(format_converter->GetSize(&w, &h)))
 				throw std::runtime_error("Failed to get the size of the source image frame.");
 			unsigned int sz = w * h * 4;
-			imgDst.Resize(DataType::UCHAR, 4, w, h);
+			imgDst.Resize(1, 4, w, h);
 			if (FAILED(format_converter->CopyPixels(nullptr, w * 4, sz, imgDst.data.data())))
 				throw std::runtime_error("Failed to copy pixels from the source image frame.");
 		}
@@ -120,8 +120,102 @@ namespace Imaging
 
 	bool WicFile::Write(const RasterImage &imgSrc, unsigned int frameNo)
 	{
+		WICPixelFormatGUID pixel_fmt;
+		IWICBitmapFrameEncode *frame(nullptr);
+		IWICMetadataQueryWriter *meta_writer(nullptr);
+		IWICBitmap *bitmap(nullptr);
+		try
+		{
+			this->encoder->CreateNewFrame(&frame, nullptr);
+			frame->Initialize(nullptr);
+			frame->GetMetadataQueryWriter(&meta_writer);
+			auto width = static_cast<unsigned int>(imgSrc.width);
+			auto height = static_cast<unsigned int>(imgSrc.height);
+			switch (imgSrc.depth)
+			{
+			case 1:
+				pixel_fmt = GUID_WICPixelFormat8bppGray;
+				frame->SetPixelFormat(&pixel_fmt);
+				if (::IsEqualGUID(pixel_fmt, GUID_WICPixelFormat8bppGray) != TRUE)
+					//{				
+					//	this->factory->CreateBitmap(imgSrc.width, imgSrc.height, GUID_WICPixelFormat8bppGray, WICBitmapCacheOnDemand, &bitmap);
 
-		return false;
+					//	// copy pixels
+
+					//	frame->SetSize(imgSrc.width, imgSrc.height);
+					//	frame->WriteSource(bitmap, nullptr);
+					//}
+					//else if (::IsEqualGUID(pixel_fmt, GUID_WICPixelFormat8bppIndexed) == TRUE)
+					//{
+					//	IWICPalette *palette(nullptr);
+					//	this->factory->CreatePalette(&palette);
+					//	this->factory->CreateBitmap(imgSrc.width, imgSrc.height, GUID_WICPixelFormat8bppIndexed, WICBitmapCacheOnDemand, &bitmap);
+					//	palette->InitializePredefined(WICBitmapPaletteTypeFixedGray256, FALSE);
+
+					//	// copy pixels to bitmap
+					//	WICRect rc = { 0, 0, imgSrc.width, imgSrc.height };
+					//	IWICBitmapLock *bitmap_lock(nullptr);
+					//	bitmap->Lock(&rc, WICBitmapLockWrite, &bitmap_lock);
+					//	unsigned int stride(0);
+					//	bitmap_lock->GetStride(&stride);
+					//	unsigned int sz_buffer(0);
+					//	unsigned char *dst(nullptr);
+					//	bitmap_lock->GetDataPointer(&sz_buffer, &dst);
+
+					//	//
+					//	bitmap->SetPalette(palette);
+
+					//}
+					//else
+					throw std::runtime_error("Unsupported pixel format");
+				break;
+			case 3:
+				pixel_fmt = GUID_WICPixelFormat24bppBGR;
+				frame->SetPixelFormat(&pixel_fmt);
+				if (::IsEqualGUID(pixel_fmt, GUID_WICPixelFormat24bppBGR) != TRUE)
+					throw std::runtime_error("Unsupported pixel format");
+				break;
+			case 4:
+				pixel_fmt = GUID_WICPixelFormat32bppBGRA;
+				frame->SetPixelFormat(&pixel_fmt);
+				if (::IsEqualGUID(pixel_fmt, GUID_WICPixelFormat32bppBGRA) != TRUE)
+					throw std::runtime_error("Unsupported pixel format");
+				break;
+			default:
+				throw std::logic_error("Unsupported number of channels per pixel");
+			}
+
+			this->factory->CreateBitmap(width, height, pixel_fmt, WICBitmapCacheOnDemand, &bitmap);
+
+			// copy pixels to bitmap
+			WICRect rc = { 0, 0, width, height };
+			IWICBitmapLock *bitmap_lock(nullptr);
+			bitmap->Lock(&rc, WICBitmapLockWrite, &bitmap_lock);
+			unsigned int stride(0);
+			bitmap_lock->GetStride(&stride);
+			unsigned int sz_buffer(0);
+			unsigned char *dst(nullptr);
+			bitmap_lock->GetDataPointer(&sz_buffer, &dst);
+			std::copy_n(imgSrc.data.data(), imgSrc.data.size(), dst);
+
+			frame->SetSize(width, height);
+			frame->WriteSource(bitmap, nullptr);
+			frame->Commit();
+			this->encoder->Commit();
+		}
+		catch (const std::exception &ex)
+		{
+			SafeRelease(frame);
+			SafeRelease(meta_writer);
+			SafeRelease(bitmap);
+			throw ex;	// Re-throw the exception.
+		}
+
+		SafeRelease(frame);
+		SafeRelease(meta_writer);
+		SafeRelease(bitmap);
+
+		return true;
 	}
 
 	bool WicFile::Close(void)

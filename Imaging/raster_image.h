@@ -27,19 +27,20 @@ namespace Imaging
 	class RasterImage
 	{
 	public:
-		void Resize(DataType dataType, ::size_t depth, ::size_t width, ::size_t height);
+		//void Resize(DataType dataType, ::size_t depth, ::size_t width, ::size_t height);
 		//template <typename T>
 		//void Resize_<T>(::size_t depth, ::size_t width, ::size_t height);
+		void Resize(::size_t bpc, ::size_t d, ::size_t w, ::size_t h);
 		void Swap(std::vector<unsigned char> &src, ::size_t depth, ::size_t width, ::size_t height);
 
 		std::vector<unsigned char> data;
-		// bytes / channel = 1
+		::size_t bytesPerCh = 1;	// bytes / channel, (default) = 1
 		bool isSigned = false;
-		bool isFloating = false;
+		bool isIntegral = true;
 		::size_t depth = 0;		// channels / pixel
 		::size_t width = 0;		// pixels / line
 		::size_t height = 0;	// lines / frame
-		DataType dataType = DataType::UNDEFINED;	//
+		//DataType dataType = DataType::UNDEFINED;	//
 
 	protected:
 	private:
