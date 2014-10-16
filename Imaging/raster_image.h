@@ -62,6 +62,7 @@ namespace Imaging
 
 	protected:
 		bool isOpened = false;
+		FileMode fileMode = FileMode::Read;
 
 	private:
 	};

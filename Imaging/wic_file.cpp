@@ -55,6 +55,7 @@ namespace Imaging
 		}
 		else
 			throw std::logic_error("Unknown file mode.");
+		this->fileMode = mode;
 		this->isOpened = true;
 
 		return true;	// redundant response to maintain the class protocol.
@@ -122,20 +123,20 @@ namespace Imaging
 	{
 		WICPixelFormatGUID pixel_fmt;
 		IWICBitmapFrameEncode *frame(nullptr);
-		IWICMetadataQueryWriter *meta_writer(nullptr);
-		IWICBitmap *bitmap(nullptr);
 		try
 		{
-			this->encoder->CreateNewFrame(&frame, nullptr);
-			frame->Initialize(nullptr);
-			frame->GetMetadataQueryWriter(&meta_writer);
+			if (FAILED(this->encoder->CreateNewFrame(&frame, nullptr)))
+				throw std::runtime_error("Failed to create a frame.");
+			if (FAILED(frame->Initialize(nullptr)))
+				throw std::runtime_error("Failed to initialize a frame.");
 			auto width = static_cast<unsigned int>(imgSrc.width);
 			auto height = static_cast<unsigned int>(imgSrc.height);
 			switch (imgSrc.depth)
 			{
 			case 1:
 				pixel_fmt = GUID_WICPixelFormat8bppGray;
-				frame->SetPixelFormat(&pixel_fmt);
+				if (FAILED(frame->SetPixelFormat(&pixel_fmt)))
+					throw std::runtime_error("Failed to set pixel format.");
 				if (::IsEqualGUID(pixel_fmt, GUID_WICPixelFormat8bppGray) != TRUE)
 					//{				
 					//	this->factory->CreateBitmap(imgSrc.width, imgSrc.height, GUID_WICPixelFormat8bppGray, WICBitmapCacheOnDemand, &bitmap);
@@ -171,13 +172,15 @@ namespace Imaging
 				break;
 			case 3:
 				pixel_fmt = GUID_WICPixelFormat24bppBGR;
-				frame->SetPixelFormat(&pixel_fmt);
+				if (FAILED(frame->SetPixelFormat(&pixel_fmt)))
+					throw std::runtime_error("Failed to set pixel format.");
 				if (::IsEqualGUID(pixel_fmt, GUID_WICPixelFormat24bppBGR) != TRUE)
 					throw std::runtime_error("Unsupported pixel format");
 				break;
 			case 4:
 				pixel_fmt = GUID_WICPixelFormat32bppBGRA;
-				frame->SetPixelFormat(&pixel_fmt);
+				if (FAILED(frame->SetPixelFormat(&pixel_fmt)))
+					throw std::runtime_error("Failed to set pixel format.");
 				if (::IsEqualGUID(pixel_fmt, GUID_WICPixelFormat32bppBGRA) != TRUE)
 					throw std::runtime_error("Unsupported pixel format");
 				break;
@@ -185,44 +188,38 @@ namespace Imaging
 				throw std::logic_error("Unsupported number of channels per pixel");
 			}
 
-			this->factory->CreateBitmap(width, height, pixel_fmt, WICBitmapCacheOnDemand, &bitmap);
+			if (FAILED(frame->SetSize(width, height)))
+				throw std::runtime_error("Failed to set the size of a frame.");
+			unsigned int stride = width * static_cast<unsigned int>(imgSrc.depth);
+			unsigned int sz_buffer = height * stride;
+			if (FAILED(frame->WritePixels(height, stride, sz_buffer, const_cast<unsigned char *>(imgSrc.data.data()))))
+				throw std::runtime_error("Failed to write pixels from source image to a frame.");
 
-			// copy pixels to bitmap
-			WICRect rc = { 0, 0, width, height };
-			IWICBitmapLock *bitmap_lock(nullptr);
-			bitmap->Lock(&rc, WICBitmapLockWrite, &bitmap_lock);
-			unsigned int stride(0);
-			bitmap_lock->GetStride(&stride);
-			unsigned int sz_buffer(0);
-			unsigned char *dst(nullptr);
-			bitmap_lock->GetDataPointer(&sz_buffer, &dst);
-			std::copy_n(imgSrc.data.data(), imgSrc.data.size(), dst);
-
-			frame->SetSize(width, height);
-			frame->WriteSource(bitmap, nullptr);
-			frame->Commit();
-			this->encoder->Commit();
+			if (FAILED(frame->Commit()))
+				throw std::runtime_error("Failed to commit a frame.");
 		}
 		catch (const std::exception &ex)
 		{
 			SafeRelease(frame);
-			SafeRelease(meta_writer);
-			SafeRelease(bitmap);
 			throw ex;	// Re-throw the exception.
 		}
 
 		SafeRelease(frame);
-		SafeRelease(meta_writer);
-		SafeRelease(bitmap);
 
 		return true;
 	}
 
 	bool WicFile::Close(void)
 	{
+		if (this->fileMode == FileMode::Write)
+		{
+			if (FAILED(this->encoder->Commit()))
+				throw std::runtime_error("Failed to commit a file.");
+		}
 		SafeRelease(this->decoder);
 		SafeRelease(this->encoder);
 		SafeRelease(this->stream);
+
 		this->isOpened = false;
 		return true;
 	}

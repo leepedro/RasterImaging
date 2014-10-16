@@ -29,6 +29,11 @@ namespace Imaging
 		// Resize only if necessary.
 		if (this->data.size() != sz)
 			this->data.resize(sz);
+
+		this->bytesPerCh = bpc;
+		this->depth = d;
+		this->width = w;
+		this->height = h;
 	}
 
 	void RasterImage::Swap(std::vector<unsigned char> &src, ::size_t depth, ::size_t width, ::size_t height)
