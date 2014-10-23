@@ -29,5 +29,8 @@
     <ClCompile Include="raster_data.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="raster_file.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

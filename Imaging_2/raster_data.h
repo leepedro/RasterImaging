@@ -3,7 +3,7 @@
 
 #include <valarray>
 
-namespace Imaging
+namespace Imaging_2
 {
 	typedef ::size_t PosType;
 
@@ -27,7 +27,7 @@ namespace Imaging
 		const unsigned char *GetConstPointer(PosType row, PosType col) const;
 
 		const ::size_t &bytesPerCh = this->bytesPerCh_;
-		const PosType &depth = this->depth_;
+		const PosType &chPerPixel = this->chPerPixel_;
 		const PosType &width = this->width_;
 		const ::size_t &bytesPerLine = this->bytesPerLine_;
 		const PosType &height = this->height_;
@@ -35,7 +35,7 @@ namespace Imaging
 	protected:
 		std::valarray<unsigned char> data;
 		::size_t bytesPerCh_ = 1;	// bytes / channel, (default) = 1
-		PosType depth_ = 1;			// channels / pixel
+		PosType chPerPixel_ = 1;	// channels / pixel, (default) = 1
 		PosType width_ = 0;			// pixels / line
 		PosType height_ = 0;		// lines / frame
 		::size_t bytesPerLine_ = 0;			// bytes / line >= bytesPerCh x depth x width

@@ -3,7 +3,9 @@
 //#include "raster_image.h"
 #include "wic_file.h"
 
-#include "raster_data.h"
+//#include "raster_data.h"
+#include "raster_file.h"
+
 
 void GetPathOpen(std::wstring &path)
 {
@@ -101,7 +103,7 @@ void TestImaging1(void)
 
 void TestImaging2(void)
 {
-	using namespace Imaging;
+	using namespace Imaging_2;
 
 	DataBlock roi1 = { 0, 1, 2, 3 };
 	DataBlock roi2{ 10, 11, 12, 13 };
@@ -115,6 +117,8 @@ void TestImaging2(void)
 	p2 = img1.GetConstPointer(0, 1);
 	//p1 = img1.GetConstPointer(0, 1);
 	//*p2 = 2;
+
+	RawRasterFile file1;
 }
 
 int main(void)
