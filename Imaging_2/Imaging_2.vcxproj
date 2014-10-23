@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{5D586B89-53CC-45A6-A261-21147FDE5F9C}</ProjectGuid>
+    <ProjectGuid>{C69EC816-3FC9-4BBD-8462-08DE15B20E2E}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>Imaging</RootNamespace>
+    <RootNamespace>Imaging_2</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -93,10 +93,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>copy /Y *.h ..\build\include\
-
-</Command>
-      <Message>Copy header files into external build directory, so other project can include.</Message>
+      <Command>copy /Y *.h ..\build\include\</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -137,12 +134,11 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="raster_image.h" />
-    <ClInclude Include="wic_file.h" />
+    <ClInclude Include="raster_data.h" />
+    <ClInclude Include="raster_file.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="raster_image.cpp" />
-    <ClCompile Include="wic_file.cpp" />
+    <ClCompile Include="raster_data.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

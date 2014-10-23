@@ -147,6 +147,9 @@
     <ProjectReference Include="..\Imaging\Imaging.vcxproj">
       <Project>{5d586b89-53cc-45a6-a261-21147fde5f9c}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\Imaging_2\Imaging_2.vcxproj">
+      <Project>{c69ec816-3fc9-4bbd-8462-08de15b20e2e}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,7 +1,9 @@
 #include <ShlObj.h>
 
-#include "raster_image.h"
+//#include "raster_image.h"
 #include "wic_file.h"
+
+#include "raster_data.h"
 
 void GetPathOpen(std::wstring &path)
 {
@@ -65,7 +67,7 @@ void GetPathSave(std::wstring &path)
 		::MessageBoxW(nullptr, L"Failed to create a file dialog.", L"Error", MB_OK);
 }
 
-int main(void)
+void TestImaging1(void)
 {
 	if (SUCCEEDED(::CoInitializeEx(nullptr, ::COINIT_APARTMENTTHREADED | ::COINIT_DISABLE_OLE1DDE)))
 	{
@@ -80,7 +82,7 @@ int main(void)
 			wic_file1.Open(pathSrc, FileMode::Read);
 			RasterImage img1;
 			wic_file1.Read(img1);
-			
+
 			std::wstring pathDst;
 			GetPathSave(pathDst);
 			WicFile wic_file2;
@@ -95,4 +97,28 @@ int main(void)
 
 		::CoUninitialize();
 	}
+}
+
+void TestImaging2(void)
+{
+	using namespace Imaging;
+
+	DataBlock roi1 = { 0, 1, 2, 3 };
+	DataBlock roi2{ 10, 11, 12, 13 };
+
+	RasterFrame img1;
+	img1.Resize(1, 2, 64, 64);
+	unsigned char *p1(nullptr);
+	const unsigned char *p2(nullptr);
+	p1 = img1.GetPointer(0, 0);
+	*p1 = 1;
+	p2 = img1.GetConstPointer(0, 1);
+	//p1 = img1.GetConstPointer(0, 1);
+	//*p2 = 2;
+}
+
+int main(void)
+{
+	//TestImaging1();
+	TestImaging2();
 }
