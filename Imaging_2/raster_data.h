@@ -7,12 +7,12 @@ namespace Imaging_2
 {
 	typedef ::size_t PosType;
 
-	struct DataBlock
+	struct BlockRange
 	{
 	public:
 		// Examples:
-		// DataBlock roi1 = { 0, 1, 2, 3 };
-		// DataBlock roi2{ 10, 11, 12, 13 };
+		// BlockRange roi1 = { 0, 1, 2, 3 };
+		// BlockRange roi2{ 10, 11, 12, 13 };
 		// The values are assigned in the order of declaration.
 		PosType rowFirst, rowLast, columnFirst, columnLast;
 		PosType GetWidth(void) { return this->columnLast - this->columnFirst + 1; }
@@ -22,6 +22,13 @@ namespace Imaging_2
 	class RasterFrame
 	{
 	public:
+		RasterFrame(void) = default;
+		RasterFrame(const RasterFrame &src);
+		RasterFrame(RasterFrame &&src);
+		RasterFrame& operator=(const RasterFrame &src);
+		RasterFrame& operator=(RasterFrame &&src);
+		~RasterFrame(void) = default;
+
 		void Resize(::size_t bytes, PosType d, PosType w, PosType h);
 		unsigned char *GetPointer(PosType row, PosType col);
 		const unsigned char *GetConstPointer(PosType row, PosType col) const;
@@ -33,6 +40,8 @@ namespace Imaging_2
 		const PosType &height = this->height_;
 
 	protected:
+		void Swap(RasterFrame &other);
+
 		std::valarray<unsigned char> data;
 		::size_t bytesPerCh_ = 1;	// bytes / channel, (default) = 1
 		PosType chPerPixel_ = 1;	// channels / pixel, (default) = 1

@@ -4,6 +4,50 @@
 
 namespace Imaging_2
 {
+	RasterFrame::RasterFrame(const RasterFrame &src) :
+		data(src.data),
+		bytesPerCh_(src.bytesPerCh), chPerPixel_(src.chPerPixel),
+		width_(src.width), height_(src.height), bytesPerLine_(src.bytesPerLine) {}
+
+	RasterFrame &RasterFrame::operator=(const RasterFrame &src)
+	{
+		if (this != &src)
+		{
+			this->data = src.data;
+
+			this->bytesPerCh_ = src.bytesPerCh;
+			this->chPerPixel_ = src.chPerPixel;
+			this->width_ = src.width;
+			this->height_ = src.height;
+			this->bytesPerLine_ = src.bytesPerLine;
+		}
+		return *this;
+	}
+
+	RasterFrame::RasterFrame(RasterFrame &&src) :
+		data(std::move(src.data)),
+		bytesPerCh_(src.bytesPerCh), chPerPixel_(src.chPerPixel),
+		width_(src.width), height_(src.height), bytesPerLine_(src.bytesPerLine) {}
+
+	RasterFrame &RasterFrame::operator=(RasterFrame &&src)
+	{
+		if (this != &src)
+			this->Swap(src);
+		return *this;
+	}
+
+	void RasterFrame::Swap(RasterFrame &other)
+	{
+		// Q. Does following line actually copy data or just switch the pointer?
+		this->data.swap(other.data);
+
+		std::swap(this->bytesPerCh_, other.bytesPerCh_);
+		std::swap(this->chPerPixel_, other.chPerPixel_);
+		std::swap(this->width_, other.width_);
+		std::swap(this->height_, other.height_);
+		std::swap(this->bytesPerLine_, other.bytesPerLine_);
+	}
+
 	void RasterFrame::Resize(::size_t bytes, PosType ch, PosType w, PosType h)
 	{		
 		try

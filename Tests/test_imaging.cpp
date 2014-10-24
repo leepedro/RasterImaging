@@ -105,10 +105,10 @@ void TestImaging2(void)
 {
 	using namespace Imaging_2;
 
-	DataBlock roi1 = { 0, 1, 2, 3 };
-	DataBlock roi2{ 10, 11, 12, 13 };
+	BlockRange roi1 = { 0, 1, 2, 3 };
+	BlockRange roi2{ 10, 11, 12, 13 };
 
-	RasterFrame img1;
+	RasterFrame img1, img2, img3, img4;
 	img1.Resize(1, 2, 64, 64);
 	unsigned char *p1(nullptr);
 	const unsigned char *p2(nullptr);
@@ -117,6 +117,12 @@ void TestImaging2(void)
 	p2 = img1.GetConstPointer(0, 1);
 	//p1 = img1.GetConstPointer(0, 1);
 	//*p2 = 2;
+	img2 = img1;
+	img3 = std::move(img1);
+
+	img4.Resize(1, 2, 4, 4);
+	// The state of img2 after this line is not intended.
+	img4 = std::move(img2);
 
 	RawRasterFile file1;
 }

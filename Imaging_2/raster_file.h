@@ -17,9 +17,11 @@ namespace Imaging_2
 
 	protected:
 		bool isOpened = false;
+		//bool isCached = false;
 		//FileMode fileMode = FileMode::Read;
 
 		RasterFrame cachedData;
+		BlockRange cachedRange;
 		// cache = raster data
 		// cache info {ROI, cached}
 	};
