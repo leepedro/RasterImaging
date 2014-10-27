@@ -9,30 +9,16 @@ namespace Imaging_2
 		bytesPerCh_(src.bytesPerCh), chPerPixel_(src.chPerPixel),
 		width_(src.width), height_(src.height), bytesPerLine_(src.bytesPerLine) {}
 
-	RasterFrame &RasterFrame::operator=(const RasterFrame &src)
+	RasterFrame::RasterFrame(RasterFrame &&src) : RasterFrame()
 	{
-		if (this != &src)
-		{
-			this->data = src.data;
-
-			this->bytesPerCh_ = src.bytesPerCh;
-			this->chPerPixel_ = src.chPerPixel;
-			this->width_ = src.width;
-			this->height_ = src.height;
-			this->bytesPerLine_ = src.bytesPerLine;
-		}
-		return *this;
+		this->Swap(src);
 	}
 
-	RasterFrame::RasterFrame(RasterFrame &&src) :
-		data(std::move(src.data)),
-		bytesPerCh_(src.bytesPerCh), chPerPixel_(src.chPerPixel),
-		width_(src.width), height_(src.height), bytesPerLine_(src.bytesPerLine) {}
-
-	RasterFrame &RasterFrame::operator=(RasterFrame &&src)
+	// Use copy and swap idiom for all of copy assignment and move assignment.
+	// Argument is given as value.
+	RasterFrame &RasterFrame::operator=(RasterFrame src)
 	{
-		if (this != &src)
-			this->Swap(src);
+		this->Swap(src);
 		return *this;
 	}
 

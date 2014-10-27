@@ -1,3 +1,5 @@
+#include <numeric>
+
 #include <ShlObj.h>
 
 //#include "raster_image.h"
@@ -121,10 +123,16 @@ void TestImaging2(void)
 	img3 = std::move(img1);
 
 	img4.Resize(1, 2, 4, 4);
-	// The state of img2 after this line is not intended.
 	img4 = std::move(img2);
 
-	RawRasterFile file1;
+	RawRasterFile file1, file2;
+	std::vector<char> data(94);
+	std::iota(data.begin(), data.end(), 33);
+	if (file1.Open(L"test.dat", std::ios_base::binary | std::ios_base::out))
+		file1.Write(data.data(), 94);
+	file1.Close();
+	if (file2.Open(L"test.dat", std::ios_base::binary | std::ios_base::in))
+		file2.Read();
 }
 
 int main(void)

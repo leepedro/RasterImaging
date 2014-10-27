@@ -15,6 +15,7 @@ namespace Imaging_2
 		// BlockRange roi2{ 10, 11, 12, 13 };
 		// The values are assigned in the order of declaration.
 		PosType rowFirst, rowLast, columnFirst, columnLast;
+
 		PosType GetWidth(void) { return this->columnLast - this->columnFirst + 1; }
 		PosType GetHeight(void) { return this->rowLast - this->rowFirst + 1; }
 	};
@@ -25,8 +26,7 @@ namespace Imaging_2
 		RasterFrame(void) = default;
 		RasterFrame(const RasterFrame &src);
 		RasterFrame(RasterFrame &&src);
-		RasterFrame& operator=(const RasterFrame &src);
-		RasterFrame& operator=(RasterFrame &&src);
+		RasterFrame& operator=(RasterFrame src);
 		~RasterFrame(void) = default;
 
 		void Resize(::size_t bytes, PosType d, PosType w, PosType h);
