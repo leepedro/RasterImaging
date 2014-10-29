@@ -30,6 +30,7 @@ namespace Imaging_2
 		~RasterFrame(void) = default;
 
 		void Resize(::size_t bytes, PosType d, PosType w, PosType h);
+		bool ResetDimension(::size_t bytes, PosType d, PosType w, PosType h);
 		unsigned char *GetPointer(PosType row, PosType col);
 		const unsigned char *GetConstPointer(PosType row, PosType col) const;
 
@@ -40,6 +41,7 @@ namespace Imaging_2
 		const PosType &height = this->height_;
 
 	protected:
+		void SetDimension(::size_t bytes, PosType d, PosType w, PosType h);
 		void Swap(RasterFrame &other);
 
 		std::valarray<unsigned char> data;

@@ -39,9 +39,11 @@ namespace Imaging_2
 		template <typename T>
 		void Write(const T *data, std::streamsize count);
 		void Read(void);
-		std::streamsize CheckLength(void);
+		const std::vector<char> &cache = this->temp;
 
 	protected:
+		std::streamsize CheckLength(void);
+
 		std::fstream fileStream;
 		std::vector<char> temp;
 	};

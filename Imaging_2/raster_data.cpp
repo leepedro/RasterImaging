@@ -38,18 +38,12 @@ namespace Imaging_2
 	{		
 		try
 		{
-			// Allocate memory.
+			// Allocate memory. Avoid re-allocation if possible.
 			auto bytes_total = bytes * ch * w * h;
-			this->data.resize(bytes_total);
+			if (this->data.size() != bytes_total)
+				this->data.resize(bytes_total);
 
-			// Update data dimension.
-			this->bytesPerCh_ = bytes;
-			this->chPerPixel_ = ch;
-			this->width_ = w;
-			this->height_ = h;
-
-			// Number of bytes / line including padding bytes.
-			this->bytesPerLine_ = this->bytesPerCh * this->chPerPixel * this->width;
+			this->ResetDimension(bytes, ch, w, h);
 		}
 		catch (const std::bad_alloc &ex)
 		{
@@ -59,6 +53,31 @@ namespace Imaging_2
 		{
 			throw std::runtime_error("Failed to resize.");
 		}		
+	}
+
+	// Resets dimension only if the given dimension matches with the size of existing memory block.
+	bool RasterFrame::ResetDimension(::size_t bytes, PosType ch, PosType w, PosType h)
+	{
+		auto bytes_total = bytes * ch * w * h;
+		if (this->data.size() == bytes_total)
+		{
+			this->SetDimension(bytes, ch, w, h);
+			return true;
+		}
+		else
+			return false;
+	}
+
+	void RasterFrame::SetDimension(::size_t bytes, PosType ch, PosType w, PosType h)
+	{
+		// Update data dimension.
+		this->bytesPerCh_ = bytes;
+		this->chPerPixel_ = ch;
+		this->width_ = w;
+		this->height_ = h;
+
+		// Number of bytes / line including padding bytes.
+		this->bytesPerLine_ = this->bytesPerCh * this->chPerPixel * this->width;
 	}
 
 	unsigned char *RasterFrame::GetPointer(PosType row, PosType col)
