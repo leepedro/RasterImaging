@@ -125,7 +125,7 @@ void TestImaging2(void)
 	img4.Resize(1, 2, 4, 4);
 	img4 = std::move(img2);
 
-	RawRasterFile file1, file2;
+	RawFile file1, file2;
 	std::vector<char> data(94);
 	std::iota(data.begin(), data.end(), 33);
 	if (file1.Open(L"test.dat", std::ios_base::binary | std::ios_base::out))

@@ -9,9 +9,14 @@
 
 namespace Imaging_2
 {
-	enum class FileMode { Read, Write };
+	class FileI
+	{
+	public:
+		virtual bool Open(const std::wstring &path, std::ios_base::openmode mode) = 0;
+		virtual void Close(void) = 0;
+	};
 
-	class RasterFileI
+	class RasterFileI : public FileI
 	{
 	public:
 		virtual bool Open(const std::wstring &path, std::ios_base::openmode mode) = 0;
@@ -28,11 +33,11 @@ namespace Imaging_2
 		// cache info {ROI, cached}
 	};
 
-	class RawRasterFile : public RasterFileI
+	class RawFile : public FileI
 	{
 	public:
-		RawRasterFile(void) = default;
-		virtual ~RawRasterFile(void) { this->Close(); }
+		RawFile(void) = default;
+		virtual ~RawFile(void) { this->Close(); }
 		virtual bool Open(const std::wstring &path, std::ios_base::openmode mode);
 		virtual void Close(void);
 
@@ -50,7 +55,7 @@ namespace Imaging_2
 
 	// Write data from the current position of the file.
 	template <typename T>
-	void RawRasterFile::Write(const T *data, std::streamsize count)
+	void RawFile::Write(const T *data, std::streamsize count)
 	{
 		this->fileStream.write(reinterpret_cast<const char *>(data), sizeof(T) * count);
 	}
